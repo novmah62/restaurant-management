@@ -1,0 +1,28 @@
+services:
+  postgresql_db:
+    image: postgres
+    container_name: postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: restaurant_management
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  rabbitmq:
+    image: rabbitmq
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      AMQP_URL: amqp://rabbitmq?connection_attempts=5&retry_delay=5
+      RABBITMQ_DEFAULT_USER: novmah
+      RABBITMQ_DEFAULT_PASS: novmah
+
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - 6379:6379
+    restart: unless-stopped
