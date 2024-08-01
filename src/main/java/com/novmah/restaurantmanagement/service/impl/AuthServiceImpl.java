@@ -5,7 +5,6 @@ import com.novmah.restaurantmanagement.dto.request.ChangePasswordRequest;
 import com.novmah.restaurantmanagement.dto.request.LoginRequest;
 import com.novmah.restaurantmanagement.dto.request.RefreshTokenRequest;
 import com.novmah.restaurantmanagement.dto.request.RegisterRequest;
-import com.novmah.restaurantmanagement.dto.response.ApiResponse;
 import com.novmah.restaurantmanagement.dto.response.AuthenticationResponse;
 import com.novmah.restaurantmanagement.dto.response.EmailDetails;
 import com.novmah.restaurantmanagement.entity.Role;
@@ -62,7 +61,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ApiResponse<String> signup(RegisterRequest registerRequest) {
+    public String signup(RegisterRequest registerRequest) {
         Set<Role> roles = Collections.singleton(roleRepository.findById(ApiConstant.ROLE_ADMIN)
                 .orElseThrow(() -> new ResourceNotFoundException("Role", "role ID", ApiConstant.ROLE_ADMIN.toString())));
         User user = userRepository.save(User.builder()
@@ -87,7 +86,7 @@ public class AuthServiceImpl implements AuthService {
                         "please click on the below url to activate your account : " +
                         "http://localhost:8080/api/v1/auth/accountVerification/" + token)
                 .build());
-        return new ApiResponse<>(true, "Your account has been created successfully. Please check your email to activate your account", null);
+        return "Your account has been created successfully. Please check your email to activate your account";
     }
     public String generateVerificationToken(User user) {
         String token = UUID.randomUUID().toString();

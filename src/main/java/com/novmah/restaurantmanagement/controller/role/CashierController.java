@@ -14,12 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/cashier")
 public class CashierController {
-//    getOrderByPaymentStatus
-//    updatePaymentStatus
-//            getOrderById
-//    getAllOrder
-//            getOrderByUserId
-//    generateInvoice
 
     private final OrderService orderService;
     private final PdfGeneratorService pdfGeneratorService;
@@ -55,8 +49,8 @@ public class CashierController {
     }
 
     @GetMapping("/order/{id}/invoice")
-    public ApiResponse generateInvoice(@PathVariable String id) throws DocumentException, IOException {
-        return pdfGeneratorService.generateInvoice(id);
+    public ApiResponse<String> generateInvoice(@PathVariable String id) throws DocumentException, IOException {
+        return new ApiResponse<>(true, "Generate invoice", pdfGeneratorService.generateInvoice(id));
     }
 
 

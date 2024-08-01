@@ -23,14 +23,14 @@ public class AuthController {
 
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse signup(@Valid @RequestBody RegisterRequest request) {
-        return authService.signup(request);
+    public ApiResponse<String> signup(@Valid @RequestBody RegisterRequest request) {
+        return new ApiResponse<>(true, "Signup", authService.signup(request));
     }
 
     @GetMapping("/accountVerification/{token}")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<String> verifyAccount(@PathVariable String token) {
-        return new ApiResponse<>(true, "", authService.verifyAccount(token));
+        return new ApiResponse<>(true, "Verify Account", authService.verifyAccount(token));
     }
 
     @PostMapping("/login")
@@ -48,7 +48,7 @@ public class AuthController {
     @PostMapping("/logout")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<String> logout(@Valid @RequestBody RefreshTokenRequest request) {
-        return new ApiResponse<>(true, "", authService.logout(request));
+        return new ApiResponse<>(true, "Logout", authService.logout(request));
     }
 
     @PatchMapping("/changePassword")

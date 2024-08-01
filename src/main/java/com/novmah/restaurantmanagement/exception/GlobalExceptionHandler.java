@@ -16,11 +16,11 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<String>> ExceptionHandler(Exception exception) {
-        ApiResponse<String> apiResponse = new ApiResponse<>(false, "Exception", exception.getMessage());
-        return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<ApiResponse<String>> ExceptionHandler(Exception exception) {
+//        ApiResponse<String> apiResponse = new ApiResponse<>(false, "Exception", exception.getMessage());
+//        return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponse<String>> resourceNotFoundExceptionHandler(ResourceNotFoundException exception) {

@@ -15,20 +15,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/chef")
 public class ChefController {
-//    getAllOrderItem v
-//            getOrderItemByStatus v
-//    getOrderItemById v
-//            updateOrderItemStatus v
-//    getFoodById
-//            getAllFood
-//    addFood
-//            updateFood
-//    addFoodToMenu
-//            removeFoodFromMenu
-//    createMenu
-//            updateMenu
-//    getMenuById
-//            getAllMenus
 
     private final OrderItemService orderItemService;
     private final FoodService foodService;

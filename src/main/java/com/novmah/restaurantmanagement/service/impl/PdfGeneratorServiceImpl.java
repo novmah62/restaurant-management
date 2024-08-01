@@ -4,13 +4,12 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.novmah.restaurantmanagement.mapper.OrderMapper;
 import com.novmah.restaurantmanagement.dto.OrderItemDto;
-import com.novmah.restaurantmanagement.dto.response.ApiResponse;
 import com.novmah.restaurantmanagement.dto.response.EmailDetails;
 import com.novmah.restaurantmanagement.dto.response.OrderResponse;
 import com.novmah.restaurantmanagement.entity.Order;
 import com.novmah.restaurantmanagement.exception.ResourceNotFoundException;
+import com.novmah.restaurantmanagement.mapper.OrderMapper;
 import com.novmah.restaurantmanagement.repository.OrderRepository;
 import com.novmah.restaurantmanagement.service.MailService;
 import com.novmah.restaurantmanagement.service.PdfGeneratorService;
@@ -37,7 +36,7 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
     }
 
     @Override
-    public ApiResponse generateInvoice(String orderId) throws IOException, DocumentException {
+    public String generateInvoice(String orderId) throws IOException, DocumentException {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order", "order ID", orderId));
         designInvoice(orderMapper.map(order));
@@ -47,9 +46,7 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
                 .messageBody("Kindly find your requested invoice attached!")
                 .attachment(FILE)
                 .build());
-        return ApiResponse.builder()
-                .success(true)
-                .message("Invoice send successfully").build();
+        return "Invoice send successfully";
     }
 
     public static void designInvoice(OrderResponse orderResponse) throws IOException, DocumentException {

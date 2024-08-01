@@ -19,6 +19,8 @@ services:
       AMQP_URL: amqp://rabbitmq?connection_attempts=5&retry_delay=5
       RABBITMQ_DEFAULT_USER: novmah
       RABBITMQ_DEFAULT_PASS: novmah
+    networks:
+      - rabbitmq_network
 
   redis:
     image: redis
@@ -26,3 +28,6 @@ services:
     ports:
       - 6379:6379
     restart: unless-stopped
+
+networks:
+  rabbitmq_network:

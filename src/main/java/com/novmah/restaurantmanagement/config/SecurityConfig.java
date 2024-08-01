@@ -9,7 +9,6 @@ import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -40,12 +39,12 @@ public class SecurityConfig {
     @Value("${jwt.private.key}")
     RSAPrivateKey privateKey;
 
-    private static final String[] OPENAPI_WHITELIST = {
-            "/v3/api-docs/**",
-            "/v3/api-docs.yaml",
-            "/swagger-ui/**",
-            "/swagger-ui.html"
-    };
+//    private static final String[] OPENAPI_WHITELIST = {
+//            "/v3/api-docs/**",
+//            "/v3/api-docs.yaml",
+//            "/swagger-ui/**",
+//            "/swagger-ui.html"
+//    };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -53,16 +52,16 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-//                        .anyRequest().permitAll()
+                        .anyRequest().permitAll())
 //                        .requestMatchers(OPENAPI_WHITELIST).permitAll()
-                        .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/foods","/api/v1/foods/**").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/api/v1/menus/**").permitAll()
+//                        .requestMatchers("/api/v1/auth/**").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/api/v1/foods","/api/v1/foods/**").permitAll()
+//                        .requestMatchers(HttpMethod.GET,"/api/v1/menus/**").permitAll()
 //                        .requestMatchers("/api/v1/customer", "/api/v1/customer/**").hasAnyAuthority("ROLE_USER", "ROLE_MANAGER", "ROLE_ADMIN")
 //                        .requestMatchers("/api/v1/waiter/**").hasAnyAuthority("ROLE_WAITER", "ROLE_MANAGER", "ROLE_ADMIN")
 //                        .requestMatchers("/api/v1/cashier/**").hasAnyAuthority("ROLE_CASHIER", "ROLE_MANAGER", "ROLE_ADMIN")
 //                        .requestMatchers("/api/v1/chef/**").hasAnyAuthority("ROLE_CHEF", "ROLE_MANAGER", "ROLE_ADMIN")
-                        .anyRequest().hasAuthority("ROLE_ADMIN"))
+//                        .anyRequest().hasAuthority("ROLE_ADMIN"))
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(exceptions -> exceptions

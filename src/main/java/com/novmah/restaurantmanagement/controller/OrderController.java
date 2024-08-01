@@ -73,8 +73,8 @@ public class OrderController {
     }
 
     @GetMapping("/{id}/invoice")
-    public ApiResponse generateInvoice(@PathVariable String id) throws DocumentException, IOException {
-        return pdfGeneratorService.generateInvoice(id);
+    public ApiResponse<String> generateInvoice(@PathVariable String id) throws DocumentException, IOException {
+        return new ApiResponse<>(true, "Generate invoice", pdfGeneratorService.generateInvoice(id));
     }
 
 }

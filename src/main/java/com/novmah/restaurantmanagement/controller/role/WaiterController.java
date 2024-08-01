@@ -21,17 +21,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/waiter")
 public class WaiterController {
-//    createOrder
-//            updateOrderStatus
-//    getOrderById
-//            getOrderByStatus
-//    getOrderByUserId
-//            getMenuById
-//    getAllMenus
-//            getFoodById
-//    getAllFood
-//            searchFoodByName
-//    getFoodByPrice
 
     private final TableService tableService;
     private final OrderService orderService;

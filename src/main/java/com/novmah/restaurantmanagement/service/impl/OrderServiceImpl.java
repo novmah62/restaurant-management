@@ -1,21 +1,24 @@
 package com.novmah.restaurantmanagement.service.impl;
 
-import com.novmah.restaurantmanagement.entity.status.TableStatus;
-import com.novmah.restaurantmanagement.mapper.OrderItemMapper;
-import com.novmah.restaurantmanagement.mapper.OrderMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.novmah.restaurantmanagement.dto.request.OrderRequest;
+import com.novmah.restaurantmanagement.dto.response.OrderMessage;
 import com.novmah.restaurantmanagement.dto.response.OrderResponse;
 import com.novmah.restaurantmanagement.entity.*;
 import com.novmah.restaurantmanagement.entity.status.OrderItemStatus;
 import com.novmah.restaurantmanagement.entity.status.OrderStatus;
 import com.novmah.restaurantmanagement.entity.status.PaymentStatus;
+import com.novmah.restaurantmanagement.entity.status.TableStatus;
 import com.novmah.restaurantmanagement.exception.ResourceNotFoundException;
+import com.novmah.restaurantmanagement.mapper.OrderItemMapper;
+import com.novmah.restaurantmanagement.mapper.OrderMapper;
 import com.novmah.restaurantmanagement.repository.FoodRepository;
 import com.novmah.restaurantmanagement.repository.OrderRepository;
 import com.novmah.restaurantmanagement.repository.TableRepository;
 import com.novmah.restaurantmanagement.repository.UserRepository;
 import com.novmah.restaurantmanagement.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,14 +36,16 @@ public class OrderServiceImpl implements OrderService {
     private final FoodRepository foodRepository;
     private final UserRepository userRepository;
     private final TableRepository tableRepository;
+    private final RabbitTemplate rabbitTemplate;
     private final OrderMapper orderMapper;
     private final OrderItemMapper orderItemMapper;
 
-    public OrderServiceImpl(OrderRepository orderRepository, FoodRepository foodRepository, UserRepository userRepository, TableRepository tableRepository, OrderMapper orderMapper, OrderItemMapper orderItemMapper) {
+    public OrderServiceImpl(OrderRepository orderRepository, FoodRepository foodRepository, UserRepository userRepository, TableRepository tableRepository, RabbitTemplate rabbitTemplate, OrderMapper orderMapper, OrderItemMapper orderItemMapper) {
         this.orderRepository = orderRepository;
         this.foodRepository = foodRepository;
         this.userRepository = userRepository;
         this.tableRepository = tableRepository;
+        this.rabbitTemplate = rabbitTemplate;
         this.orderMapper = orderMapper;
         this.orderItemMapper = orderItemMapper;
     }
@@ -88,8 +93,15 @@ public class OrderServiceImpl implements OrderService {
         order.setPaymentStatus(PaymentStatus.PENDING);
 
         orderRepository.save(order);
-        log.info("order: {}",order);
-        log.info("order response: {}",orderMapper.map(order));
+        OrderMessage orderMessage = new OrderMessage();
+        orderMessage.setUserEmail(order.getUser().getEmail());
+        orderMessage.setUserName(order.getUser().getName());
+        orderMessage.setUserRole(order.getUser().getRoles());
+        orderMessage.setTableNumber(order.getDiningTable().getNumber());
+        orderMessage.setTotalPrice(order.getTotalPrice());
+        orderMessage.setOrderItemDtoList(orderItems.stream().map(orderItemMapper::map).toList());
+        rabbitTemplate.convertAndSend("order.exchange", "order.new", orderMessage);
+        log.info("{}", orderMapper.map(order));
 
         return orderMapper.map(order);
     }
